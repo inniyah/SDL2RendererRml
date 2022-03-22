@@ -15,7 +15,7 @@
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -25,12 +25,11 @@
  * THE SOFTWARE.
  *
  */
- 
+
 #include "SystemInterface.h"
 #include <RmlUi/Core.h>
 
-Rml::Input::KeyIdentifier SystemInterface::TranslateKey(SDL_Keycode sdlkey)
-{
+Rml::Input::KeyIdentifier SystemInterface::TranslateKey(SDL_Keycode sdlkey) {
     using namespace Rml::Input;
 
     switch(sdlkey) {
@@ -370,10 +369,8 @@ Rml::Input::KeyIdentifier SystemInterface::TranslateKey(SDL_Keycode sdlkey)
     }
 }
 
-int SystemInterface::TranslateMouseButton(Uint8 button)
-{
-    switch(button)
-    {
+int SystemInterface::TranslateMouseButton(Uint8 button) {
+    switch(button) {
         case SDL_BUTTON_LEFT:
             return 0;
         case SDL_BUTTON_RIGHT:
@@ -385,58 +382,54 @@ int SystemInterface::TranslateMouseButton(Uint8 button)
     }
 }
 
-int SystemInterface::GetKeyModifiers()
-{
+int SystemInterface::GetKeyModifiers() {
     SDL_Keymod sdlMods = SDL_GetModState();
 
     int retval = 0;
 
-    if(sdlMods & KMOD_CTRL)
+    if (sdlMods & KMOD_CTRL)
         retval |= Rml::Input::KM_CTRL;
 
-    if(sdlMods & KMOD_SHIFT)
+    if (sdlMods & KMOD_SHIFT)
         retval |= Rml::Input::KM_SHIFT;
 
-    if(sdlMods & KMOD_ALT)
+    if (sdlMods & KMOD_ALT)
         retval |= Rml::Input::KM_ALT;
 
     return retval;
 }
 
-double SystemInterface::GetElapsedTime()
-{
-	return double(SDL_GetTicks()) / 1000.0;
+double SystemInterface::GetElapsedTime() {
+    return double(SDL_GetTicks()) / 1000.0;
 }
 
-bool SystemInterface::LogMessage(Rml::Log::Type type, const Rml::String& message)
-{
-	Rml::String Type;
+bool SystemInterface::LogMessage(Rml::Log::Type type, const Rml::String& message) {
+    Rml::String Type;
 
-	switch(type)
-	{
-	case Rml::Log::LT_ALWAYS:
-		Type = "[Always]";
-		break;
-	case Rml::Log::LT_ERROR:
-		Type = "[Error]";
-		break;
-	case Rml::Log::LT_ASSERT:
-		Type = "[Assert]";
-		break;
-	case Rml::Log::LT_WARNING:
-		Type = "[Warning]";
-		break;
-	case Rml::Log::LT_INFO:
-		Type = "[Info]";
-		break;
-	case Rml::Log::LT_DEBUG:
-		Type = "[Debug]";
-		break;
-    case Rml::Log::LT_MAX:
-        break;
-	};
+    switch(type) {
+        case Rml::Log::LT_ALWAYS:
+            Type = "[Always]";
+            break;
+        case Rml::Log::LT_ERROR:
+            Type = "[Error]";
+            break;
+        case Rml::Log::LT_ASSERT:
+            Type = "[Assert]";
+            break;
+        case Rml::Log::LT_WARNING:
+            Type = "[Warning]";
+            break;
+        case Rml::Log::LT_INFO:
+            Type = "[Info]";
+            break;
+        case Rml::Log::LT_DEBUG:
+            Type = "[Debug]";
+            break;
+        case Rml::Log::LT_MAX:
+            break;
+    };
 
-	printf("%s - %s\n", Type.c_str(), message.c_str());
+    printf("%s - %s\n", Type.c_str(), message.c_str());
 
-	return true;
+    return true;
 }

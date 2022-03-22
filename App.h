@@ -30,8 +30,9 @@
 #define APP_H
 
 #ifdef RMLUI_PLATFORM_WIN32
-	#include <windows.h>
+    #include <windows.h>
 #endif
+
 #include <string.h>
 #include <SDL.h>
 #include <RmlUi/Core.h>
@@ -41,39 +42,37 @@
 #include "SystemInterface.h"
 #include "RenderInterface.h"
 
-class App
-{
+class App {
 public:
-	static void init();
-	static void loop();
-	static void draw_background(SDL_Renderer* sdlRenderer, int width, int height);
-	static void do_frame();
-	static void exit();
-	
-	static SDL_Window* mSdlWindow;
-	static SDL_Renderer* mSdlRenderer;
-	static FileInterface* mFileInterface;
+    static void init();
+    static void loop();
+    static void draw_background(SDL_Renderer* sdlRenderer, int width, int height);
+    static void do_frame();
+    static void exit();
+
+    static SDL_Window* mSdlWindow;
+    static SDL_Renderer* mSdlRenderer;
+    static FileInterface* mFileInterface;
     static SystemInterface* mSystemInterface;
     static RenderInterface* mRenderInterface;
-	static Rml::Context* mRmlContext;
-	static Rml::String mFile;
+    static Rml::Context* mRmlContext;
+    static Rml::String mFile;
     static Rml::String mTitle;
     static int mX;
     static int mY;
-	static int mWidth;
-	static int mHeight;
-	static bool mActive;
+    static int mWidth;
+    static int mHeight;
+    static bool mActive;
 };
-
 
 /*
 #ifdef IOS
 @interface iphoneViewerAppDelegate : NSObject <UIApplicationDelegate, UIAccelerometerDelegate>{
-	UIAccelerationValue        accel[3];
+    UIAccelerationValue        accel[3];
 }
 
 @property (nonatomic, retain) UIWindow *_window;
-	- (void)updateScene;
+    - (void)updateScene;
 @end
 #endif //ISO
 */

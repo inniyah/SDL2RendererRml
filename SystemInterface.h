@@ -15,7 +15,7 @@
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -25,7 +25,7 @@
  * THE SOFTWARE.
  *
  */
- 
+
 #ifndef SYSTEMINTEFACE_H
 #define SYSTEMINTEFACE_H
 
@@ -33,15 +33,13 @@
 #include <RmlUi/Core/SystemInterface.h>
 #include <RmlUi/Core/Input.h>
 
-
-class SystemInterface : public Rml::SystemInterface
-{
+class SystemInterface : public Rml::SystemInterface {
 public:
     Rml::Input::KeyIdentifier TranslateKey(SDL_Keycode sdlkey);
     int TranslateMouseButton(Uint8 button);
-	int GetKeyModifiers();
-	
-	double GetElapsedTime() override;
+    int GetKeyModifiers();
+
+    double GetElapsedTime() override;
     bool LogMessage(Rml::Log::Type type, const Rml::String& message) override;
 };
 #endif

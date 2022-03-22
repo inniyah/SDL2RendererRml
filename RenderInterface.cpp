@@ -15,7 +15,7 @@
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -31,8 +31,7 @@
 #include <RmlUi/Core.h>
 #include "GifAnimate.h"
 
-RenderInterface::RenderInterface(SDL_Renderer* sdlRenderer, SDL_Window* sdlWindow)
-{
+RenderInterface::RenderInterface(SDL_Renderer* sdlRenderer, SDL_Window* sdlWindow) {
     mSdlRenderer = sdlRenderer;
     mSdlWindow = sdlWindow;
 
@@ -45,11 +44,9 @@ RenderInterface::RenderInterface(SDL_Renderer* sdlRenderer, SDL_Window* sdlWindo
 }
 
 // Called by RmlUi when it wants to render geometry that it does not wish to optimise.
-void RenderInterface::RenderGeometry(Rml::Vertex* vertices, int num_vertices, int* indices, int num_indices, const Rml::TextureHandle texture, const Rml::Vector2f& translation)
-{
+void RenderInterface::RenderGeometry(Rml::Vertex* vertices, int num_vertices, int* indices, int num_indices, const Rml::TextureHandle texture, const Rml::Vector2f& translation) {
     SDL_Texture* sdlTexture = GetGifAnimation(texture);
-    if (sdlTexture == nullptr)
-    {
+    if (sdlTexture == nullptr) {
         sdlTexture = (SDL_Texture*)texture;
     }
 
@@ -60,7 +57,7 @@ void RenderInterface::RenderGeometry(Rml::Vertex* vertices, int num_vertices, in
 
     //Crate a vector to position the texture's translation
     std::vector<Rml::Vector2f> pos;
-    for (int i = 0; i < num_vertices; ++i) 
+    for (int i = 0; i < num_vertices; ++i)
     {
         pos.push_back(Rml::Vector2f(vertices[i].position.x + translation.x, vertices[i].position.y + translation.y));
     }
@@ -75,38 +72,33 @@ void RenderInterface::RenderGeometry(Rml::Vertex* vertices, int num_vertices, in
 }
 
 // Called by RmlUi when it wants to compile geometry it believes will be static for the forseeable future.
-Rml::CompiledGeometryHandle RenderInterface::CompileGeometry(Rml::Vertex* vertices, int num_vertices, int* indices, int num_indices, Rml::TextureHandle texture)
-{
+Rml::CompiledGeometryHandle RenderInterface::CompileGeometry(Rml::Vertex* vertices, int num_vertices, int* indices, int num_indices, Rml::TextureHandle texture) {
     return (Rml::CompiledGeometryHandle) nullptr;
 }
 
 // Called by RmlUi when it wants to render application-compiled geometry.
-void RenderInterface::RenderCompiledGeometry(Rml::CompiledGeometryHandle geometry, const Rml::Vector2f& translation)
-{
+void RenderInterface::RenderCompiledGeometry(Rml::CompiledGeometryHandle geometry, const Rml::Vector2f& translation) {
 
 }
 
 // Called by RmlUi when it wants to release application-compiled geometry.
-void RenderInterface::ReleaseCompiledGeometry(Rml::CompiledGeometryHandle geometry)
-{
+void RenderInterface::ReleaseCompiledGeometry(Rml::CompiledGeometryHandle geometry) {
 
 }
 
-// Called by RmlUi when it wants to enable or disable scissoring to clip content.		
-void RenderInterface::EnableScissorRegion(bool enable)
-{
-    if (enable) 
+// Called by RmlUi when it wants to enable or disable scissoring to clip content.
+void RenderInterface::EnableScissorRegion(bool enable) {
+    if (enable)
     {
        SDL_RenderSetClipRect(mSdlRenderer, &mScisorRect);
-    } else 
+    } else
     {
         SDL_RenderSetClipRect(mSdlRenderer, NULL);
     }
 }
 
-// Called by RmlUi when it wants to change the scissor region.		
-void RenderInterface::SetScissorRegion(int x, int y, int width, int height)
-{
+// Called by RmlUi when it wants to change the scissor region.
+void RenderInterface::SetScissorRegion(int x, int y, int width, int height) {
     //int w_width, w_height;
     //SDL_GetWindowSize(mScreen, &w_width, &w_height);
     mScisorRect.x = x;
@@ -115,18 +107,15 @@ void RenderInterface::SetScissorRegion(int x, int y, int width, int height)
     mScisorRect.h = height;
 }
 
-// Called by RmlUi when a texture is required by the library.		
-bool RenderInterface::LoadTexture(Rml::TextureHandle& texture_handle, Rml::Vector2i& texture_dimensions, const Rml::String& source)
-{
-    if(LoadGifAnimation(mSdlRenderer, source, texture_handle, texture_dimensions))
-    {
+// Called by RmlUi when a texture is required by the library.
+bool RenderInterface::LoadTexture(Rml::TextureHandle& texture_handle, Rml::Vector2i& texture_dimensions, const Rml::String& source) {
+    if (LoadGifAnimation(mSdlRenderer, source, texture_handle, texture_dimensions)) {
         return true;
     }
-    
+
     Rml::FileInterface* fileInterface = Rml::GetFileInterface();
     Rml::FileHandle fileHandle = fileInterface->Open(source);
-    if (!fileHandle)
-    {
+    if (!fileHandle) {
         printf("Error loading file\n");
         return false;
     }
@@ -137,10 +126,9 @@ bool RenderInterface::LoadTexture(Rml::TextureHandle& texture_handle, Rml::Vecto
 
     char* buffer = new char[bufferSize];
     fileInterface->Read(buffer, bufferSize, fileHandle);
-    
+
     size_t i;
-    for (i = source.length() - 1; i > 0; i--)
-    {
+    for (i = source.length() - 1; i > 0; i--) {
         if (source[i] == '.')
             break;
     }
@@ -149,28 +137,23 @@ bool RenderInterface::LoadTexture(Rml::TextureHandle& texture_handle, Rml::Vecto
 
     SDL_Surface* sdlSurface = IMG_LoadTyped_RW(SDL_RWFromMem(buffer, int(bufferSize)), 1, extension.c_str());
     fileInterface->Close(fileHandle);
-    if (sdlSurface)
-    {
+    if (sdlSurface) {
         SDL_Texture* sdlTexture = SDL_CreateTextureFromSurface(mSdlRenderer, sdlSurface);
-        if (sdlTexture)
-        {
+        if (sdlTexture) {
             texture_handle = (Rml::TextureHandle)sdlTexture;
             texture_dimensions = Rml::Vector2i(sdlSurface->w, sdlSurface->h);
             SDL_FreeSurface(sdlSurface);
-        }
-        else
-        {
+        } else {
             return false;
         }
         return true;
     }
- 
+
     return false;
 }
 
 // Called by RmlUi when a texture is required to be built from an internally-generated sequence of pixels.
-bool RenderInterface::GenerateTexture(Rml::TextureHandle& texture_handle, const Rml::byte* source, const Rml::Vector2i& source_dimensions)
-{
+bool RenderInterface::GenerateTexture(Rml::TextureHandle& texture_handle, const Rml::byte* source, const Rml::Vector2i& source_dimensions) {
     #if SDL_BYTEORDER == SDL_BIG_ENDIAN
         Uint32 rmask = 0xff000000;
         Uint32 gmask = 0x00ff0000;
@@ -191,13 +174,11 @@ bool RenderInterface::GenerateTexture(Rml::TextureHandle& texture_handle, const 
     return true;
 }
 
-// Called by RmlUi when a loaded texture is no longer required.		
-void RenderInterface::ReleaseTexture(Rml::TextureHandle texture_handle)
-{
+// Called by RmlUi when a loaded texture is no longer required.
+void RenderInterface::ReleaseTexture(Rml::TextureHandle texture_handle) {
     SDL_DestroyTexture( (SDL_Texture*)texture_handle);
 }
 
-void RenderInterface::SetTransform(const Rml::Matrix4f* transform)
-{
+void RenderInterface::SetTransform(const Rml::Matrix4f* transform) {
 
 }

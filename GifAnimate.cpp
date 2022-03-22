@@ -29,21 +29,17 @@
 #include "GifAnimate.h"
 #include "FileInterface.h"
 
-bool LoadGifAnimation(SDL_Renderer* renderer, const Rml::String& source, Rml::TextureHandle& texture_handle, Rml::Vector2i& texture_dimensions) 
-{
+bool LoadGifAnimation(SDL_Renderer* renderer, const Rml::String& source, Rml::TextureHandle& texture_handle, Rml::Vector2i& texture_dimensions) {
     size_t i;
-    for (i = source.length() - 1; i > 0; i--)
-    {
+    for (i = source.length() - 1; i > 0; i--) {
         if (source[i] == '.')
             break;
     }
     Rml::String extension = source.substr(i + 1, source.length() - i);
-    if (extension == "gif") 
-    {
+    if (extension == "gif") {
         GifData gif_data;
         gif_data.anim = IMG_LoadAnimation( (FileInterface::mRoot + source).c_str() );
-        if (!gif_data.anim) 
-        {
+        if (!gif_data.anim) {
             printf("Couldn't load %s: %s\n", (FileInterface::mRoot + source).c_str(), SDL_GetError());
             return false;
         }
@@ -55,8 +51,7 @@ bool LoadGifAnimation(SDL_Renderer* renderer, const Rml::String& source, Rml::Te
             return false;
         }
 
-        for (int n = 0; n < gif_data.anim->count; ++n) 
-        {
+        for (int n = 0; n < gif_data.anim->count; ++n) {
             gif_data.textures[n] = SDL_CreateTextureFromSurface(renderer, gif_data.anim->frames[n]);
         }
         texture_handle = (Rml::TextureHandle)gif_data.textures[0];
@@ -71,22 +66,19 @@ bool LoadGifAnimation(SDL_Renderer* renderer, const Rml::String& source, Rml::Te
     return false;
 }
 
-SDL_Texture* GetGifAnimation(const Rml::TextureHandle texture) 
-{
-    if (gif_map.find(texture) != gif_map.end()) 
-    {
+SDL_Texture* GetGifAnimation(const Rml::TextureHandle texture) {
+    if (gif_map.find(texture) != gif_map.end()) {
         GifData* g = &gif_map[texture];
         SDL_Texture* sdl_texture = (SDL_Texture*)g->textures[g->current_frame];
         g->delay = g->anim->delays[g->current_frame];
         g->currentTime = SDL_GetTicks();  //FIXME: USE SDL_GetTicks64 if avalable
 
-        if (g->currentTime > g->lastTime + g->delay) 
-        {
+        if (g->currentTime > g->lastTime + g->delay) {
             g->lastTime = g->currentTime;
             g->current_frame = (g->current_frame + 1) % g->anim->count;
         }
         return sdl_texture;
     }
-    
+
     return nullptr; //(SDL_Texture*)rml_textureHandle;
 }

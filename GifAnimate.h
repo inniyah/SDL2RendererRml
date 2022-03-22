@@ -25,7 +25,7 @@
  * THE SOFTWARE.
  *
  */
- 
+
 #ifndef GIFANIMATE_H
 #define GIFANIMATE_H
 
@@ -33,12 +33,10 @@
 #include <SDL_image.h>
 #include <RmlUi/Core/Types.h>
 
-
-struct GifData 
-{
-	IMG_Animation* anim;
-	SDL_Texture** textures;
-	int current_frame, delay, lastTime, currentTime;
+struct GifData {
+    IMG_Animation* anim;
+    SDL_Texture** textures;
+    int current_frame, delay, lastTime, currentTime;
 };
 
 static std::map<Rml::TextureHandle, GifData> gif_map;

@@ -43,98 +43,87 @@ long Framerate::frametimelast = 0; // Last calculated Framerate::GetTicks()
 long Framerate::framecount = 0; // total frames rendered
 float Framerate::framespersecond = 0;
 
-
-long Framerate::GetTicks() 
+long Framerate::GetTicks()
 {
-	return SDL_GetTicks();
+    return SDL_GetTicks();
 }
 
-int Framerate::GetFramerate()
-{
-	return _fps;
+int Framerate::GetFramerate() {
+    return _fps;
 }
 
-void Framerate::SetFramerate(const int& fps)
-{
-	_fps = fps;
-	if (_fps == 0) {
-		ticksPerFrame = 0;
-		return;
-	}
-	ticksPerFrame = 1000 / _fps;
+void Framerate::SetFramerate(const int& fps) {
+    _fps = fps;
+    if (_fps == 0) {
+        ticksPerFrame = 0;
+        return;
+    }
+    ticksPerFrame = 1000 / _fps;
 }
 
-void Framerate::StartFramerate() 
+void Framerate::StartFramerate()
 {
-	Framerate::now = Framerate::GetTicks();
-	Framerate::lastFrame = Framerate::GetTicks();
-	Framerate::lastSecond = Framerate::GetTicks();
+    Framerate::now = Framerate::GetTicks();
+    Framerate::lastFrame = Framerate::GetTicks();
+    Framerate::lastSecond = Framerate::GetTicks();
 }
 
-void Framerate::LimitFramerate(const int& fps)
-{
-	if (!Framerate::now) 
-	{ 
-		Framerate::StartFramerate(); 
-	}
-	Framerate::now = Framerate::GetTicks();
-	long delta = Framerate::now - Framerate::lastFrame;
-	if (delta < Framerate::ticksPerFrame) 
-	{
-		long sleep = Framerate::ticksPerFrame - delta;
-		SDL_Delay(sleep);
-	}
-	if(fps != _fps)
-	{
-		Framerate::SetFramerate(fps);
-	}
-	Framerate::lastFrame = Framerate::GetTicks();
-	Framerate::UpdateFps();
+void Framerate::LimitFramerate(const int& fps) {
+    if (!Framerate::now)
+    {
+        Framerate::StartFramerate();
+    }
+    Framerate::now = Framerate::GetTicks();
+    long delta = Framerate::now - Framerate::lastFrame;
+    if (delta < Framerate::ticksPerFrame)
+    {
+        long sleep = Framerate::ticksPerFrame - delta;
+        SDL_Delay(sleep);
+    }
+    if (fps != _fps) {
+        Framerate::SetFramerate(fps);
+    }
+    Framerate::lastFrame = Framerate::GetTicks();
+    Framerate::UpdateFps();
 }
 
-unsigned long Framerate::GetFrames()
-{
-	return framecount;
+unsigned long Framerate::GetFrames() {
+    return framecount;
 }
 
-void Framerate::StartFps() 
-{
-	memset(frametimes, 0, sizeof(frametimes)); // Set all frame times to 0ms
-	frametimelast = Framerate::GetTicks();
+void Framerate::StartFps() {
+    memset(frametimes, 0, sizeof(frametimes)); // Set all frame times to 0ms
+    frametimelast = Framerate::GetTicks();
 }
 
-void Framerate::UpdateFps() 
-{
-	if (!frametimelast) { Framerate::StartFps(); }
-	long frametimesindex;
-	long getticks;
-	long count;
-	long i;
-	// frametimesindex is the position in the array. It ranges from 0 to FRAME_VALUES.
-	// This value rotates back to 0 after it hits FRAME_VALUES.
-	frametimesindex = framecount % FRAME_VALUES;
-	getticks = Framerate::GetTicks();// store the current time
-	frametimes[frametimesindex] = getticks - frametimelast; // save the frame time value
-	frametimelast = getticks; // save the last frame time for the next UpdateFps()
-	framecount++; // increment the frame count
-	if (framecount < FRAME_VALUES)
-	{
-		count = framecount;
-	}
-	else
-	{
-		count = FRAME_VALUES;
-	}
-	framespersecond = 0;
-	for (i = 0; i < count; i++)
-	{
-		framespersecond += frametimes[i];
-	}
-	framespersecond /= count;
-	framespersecond = 1000.f / framespersecond;
+void Framerate::UpdateFps() {
+    if (!frametimelast) {
+        Framerate::StartFps();
+    }
+    long frametimesindex;
+    long getticks;
+    long count;
+    long i;
+    // frametimesindex is the position in the array. It ranges from 0 to FRAME_VALUES.
+    // This value rotates back to 0 after it hits FRAME_VALUES.
+    frametimesindex = framecount % FRAME_VALUES;
+    getticks = Framerate::GetTicks();// store the current time
+    frametimes[frametimesindex] = getticks - frametimelast; // save the frame time value
+    frametimelast = getticks; // save the last frame time for the next UpdateFps()
+    framecount++; // increment the frame count
+    if (framecount < FRAME_VALUES) {
+        count = framecount;
+    } else {
+        count = FRAME_VALUES;
+    }
+    framespersecond = 0;
+    for (i = 0; i < count; i++) {
+        framespersecond += frametimes[i];
+    }
+    framespersecond /= count;
+    framespersecond = 1000.f / framespersecond;
 }
 
-unsigned int Framerate::GetFps() 
-{
-	return (unsigned int)framespersecond;
+unsigned int Framerate::GetFps() {
+    return (unsigned int)framespersecond;
 }

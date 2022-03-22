@@ -31,32 +31,31 @@
 
 #define FRAME_VALUES 30
 
-class Framerate
-{
+class Framerate {
 public:
-	static long GetTicks();
-	static int GetFramerate();
-	static void SetFramerate(const int& fps);
-	static void StartFramerate();
-	static void LimitFramerate(const int& fps = 60);
-	static unsigned long GetFrames();
-	static void StartFps();
-	static void UpdateFps();
-	static unsigned int GetFps();
+    static long GetTicks();
+    static int GetFramerate();
+    static void SetFramerate(const int& fps);
+    static void StartFramerate();
+    static void LimitFramerate(const int& fps = 60);
+    static unsigned long GetFrames();
+    static void StartFps();
+    static void UpdateFps();
+    static unsigned int GetFps();
 
 private:
-	//Frame limiter
-	static long lastSecond;
-	static long now;
-	static long lastFrame;
-	static int _fps;
-	static int ticksPerFrame;
+    //Frame limiter
+    static long lastSecond;
+    static long now;
+    static long lastFrame;
+    static int _fps;
+    static int ticksPerFrame;
 
-	//FPS Counter
-	static long frametimes[FRAME_VALUES]; // An array to store frame times:
-	static long frametimelast; // Last calculated GetTicks()
-	static long framecount; // total frames rendered
-	static float framespersecond;
+    //FPS Counter
+    static long frametimes[FRAME_VALUES]; // An array to store frame times:
+    static long frametimelast; // Last calculated GetTicks()
+    static long framecount; // total frames rendered
+    static float framespersecond;
 };
 
 #endif
