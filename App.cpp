@@ -29,6 +29,7 @@
 #include "App.h"
 #include "Framerate.h"
 #include <fstream>
+#include <GL/gl.h>
 
 bool App::mActive;
 Rml::String App::mFile;
@@ -56,29 +57,42 @@ void App::init() {
 #ifdef RMLUI_PLATFORM_WIN32
     //AllocConsole();
 #endif
-    if (SDL_Init(SDL_INIT_VIDEO) < 0)
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         printf("ERROR: SDL_Init( SDL_INIT_VIDEO ) failed: %s\n", SDL_GetError());
+    }
 
     //SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0");
-    SDL_Window* sdlWindow = SDL_CreateWindow("RmlUi SDL2 with SDL_Renderer", mX, mY, mWidth, mHeight, SDL_WINDOW_RESIZABLE);
-    if (!sdlWindow)
+    SDL_Window* sdlWindow = SDL_CreateWindow("RmlUi SDL2 with SDL_Renderer",
+        mX, mY, mWidth, mHeight,
+        SDL_WINDOW_RESIZABLE | SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI
+    );
+    if (!sdlWindow) {
         printf("SDL_Window* invalid: %s\n", SDL_GetError());
+    }
     mSdlWindow = sdlWindow;
 
-    SDL_Renderer* sdlRenderer = SDL_CreateRenderer(sdlWindow, -1, 0);//SDL_RENDERER_ACCELERATED/* | SDL_RENDERER_PRESENTVSYNC*/);
-    if (!sdlRenderer)
+    SDL_Renderer* sdlRenderer = SDL_CreateRenderer(sdlWindow,
+        -1, 0
+    ); //SDL_RENDERER_ACCELERATED/* | SDL_RENDERER_PRESENTVSYNC*/);
+    if (!sdlRenderer) {
         printf("SDL renderer invalid: %s\n", SDL_GetError());
+    }
     mSdlRenderer = sdlRenderer;
 
     SDL_RendererInfo sdlRenderinfo;
-    if (SDL_GetRendererInfo(mSdlRenderer, &sdlRenderinfo) < 0)
+    if (SDL_GetRendererInfo(mSdlRenderer, &sdlRenderinfo) < 0) {
         printf("SDL_GetRendererInfo() failed: %s\n", SDL_GetError());
+    }
 
     // Print the SDL_Render name, and display it in the mTitle bar
     Rml::String rendererName = sdlRenderinfo.name;
     printf("SDL_Renderer Driver = %s\n", rendererName.c_str());
     mTitle = Rml::String("SDL_Renderer RmlUi - " + rendererName);
     SDL_SetWindowTitle(sdlWindow, mTitle.c_str());
+
+    printf("GL_RENDERER: %s\n", glGetString(GL_RENDERER));
+    printf("GL_VERSION: %s\n", glGetString(GL_VERSION));
+    printf("GL_SHADING_LANGUAGE_VERSION: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
 
     mFileInterface = new FileInterface( FileInterface::FindAssets(App::mFile) );
     Rml::SetFileInterface(mFileInterface);
@@ -89,8 +103,9 @@ void App::init() {
     mRenderInterface = new RenderInterface(mSdlRenderer, mSdlWindow);
     Rml::SetRenderInterface(mRenderInterface);
 
-    if (!Rml::Initialise())
+    if (!Rml::Initialise()) {
         printf("Rml::Initialise() failed\n");
+    }
 
     struct FontFace {
         Rml::String filename;
